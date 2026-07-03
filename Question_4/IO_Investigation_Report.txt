@@ -1,0 +1,46 @@
+1. Open files identified
+Command Executed: lsof -c bash | head -n 15
+Output:
+COMMAND   PID    USER  FD   TYPE DEVICE SIZE/OFF   NODE NAME
+bash    10614 krishna cwd    DIR  259,6     4096 419866 /home/krishna/Downloads/Linux_Assignment/Question_4
+bash    10614 krishna rtd    DIR  259,6     4096      2 /
+bash    10614 krishna txt    REG  259,6  1544408 393795 /usr/bin/bash
+bash    10614 krishna mem    REG  259,6  5726160 416169 /usr/lib/locale/locale-archive
+bash    10614 krishna mem    REG  259,6  2326088 400877 /usr/lib/x86_64-linux-gnu/libc.so.6
+bash    10614 krishna mem    REG  259,6   220768 400946 /usr/lib/x86_64-linux-gnu/libtinfo.so.6.5
+bash    10614 krishna mem    REG  259,6    27028 400866 /usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+bash    10614 krishna mem    REG  259,6   263200 400874 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+bash    10614 krishna   0u   CHR  136,0      0t0      3 /dev/pts/0
+bash    10614 krishna   1u   CHR  136,0      0t0      3 /dev/pts/0
+bash    10614 krishna   2u   CHR  136,0      0t0      3 /dev/pts/0
+bash    10614 krishna 255u   CHR  136,0      0t0      3 /dev/pts/0
+Explanation: I used the lsof (list open files) command with the -c option to filter for files currently opened by the bash process. This reveals the file names, file descriptors, and process IDs associated with the active terminal shell.
+
+2. File descriptor observations
+Command Executed: ls -l /proc/self/fd
+Output:
+total 0
+lrwx------ 1 krishna krishna 64 Jul  3 20:21 0 -> /dev/pts/0
+lrwx------ 1 krishna krishna 64 Jul  3 20:21 1 -> /dev/pts/0
+lrwx------ 1 krishna krishna 64 Jul  3 20:21 2 -> /dev/pts/0
+lr-x------ 1 krishna krishna 64 Jul  3 20:21 3 -> /proc/16541/fd
+Explanation: By inspecting the current process's file descriptors, I can observe the three standard file descriptors assigned by default in Linux: 0 (Standard Input/stdin), 1 (Standard Output/stdout), and 2 (Standard Error/stderr), all pointing to the character device representing my terminal.
+
+3. Output redirection and error redirection results
+Command Executed: ls /etc non_existent_file > output.txt 2> error.txt followed by cat output.txt | head -n 5 and cat error.txt
+Output:
+/etc:
+ImageMagick-7
+ModemManager
+NetworkManager
+PackageKit
+ls: cannot access 'non_existent_file': No such file or directory
+Explanation: I ran a command that produces both a valid result and an error. I used the > symbol to redirect the standard output (file descriptor 1) to output.txt, and the 2> symbol to route the standard error stream (file descriptor 2) cleanly into error.txt.
+
+4. Resource Limits observed
+Command Executed: ulimit -n
+Output: 1024
+Explanation: The ulimit -n command displays the maximum number of file descriptors that a single process is allowed to open simultaneously. Proper management of this limit is critical to prevent resource leaks and ensure efficient system performance.
+
+5. Explanation of how Linux manages file I/O
+Linux manages Input/Output (I/O) by utilizing a Kernel I/O structure that acts as an intermediary between user processes and hardware. It treats data streams and devices as files, assigning unique integer values known as file descriptors (0, 1, and 2) to manage standard input, output, and error. For physical hardware, the kernel utilizes the Block I/O Layer for storage devices transferring fixed-size chunks, and the Character I/O Layer for sequential data streams like terminals and keyboards.

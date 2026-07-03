@@ -1,0 +1,98 @@
+
+
+1. Available storage devices
+
+Command Executed: lsblk
+
+Output: 
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+loop0         7:0    0    74M  1 loop /snap/core22/2292
+loop1         7:1    0  66.8M  1 loop /snap/core24/1587
+loop2         7:2    0    74M  1 loop /snap/core22/2411
+loop3         7:3    0     4K  1 loop /snap/bare/5
+loop4         7:4    0    20M  1 loop /snap/desktop-security-center/151
+loop5         7:5    0  22.6M  1 loop /snap/desktop-security-center/99
+loop6         7:6    0 274.8M  1 loop /snap/firefox/8191
+loop7         7:7    0  18.5M  1 loop /snap/firmware-updater/210
+loop8         7:8    0 251.6M  1 loop /snap/firefox/7836
+loop9         7:9    0  16.5M  1 loop /snap/firmware-updater/226
+loop10        7:10   0   516M  1 loop /snap/gnome-42-2204/202
+loop11        7:11   0 531.4M  1 loop /snap/gnome-42-2204/247
+loop12        7:12   0 606.1M  1 loop /snap/gnome-46-2404/153
+loop13        7:13   0  91.7M  1 loop /snap/gtk-common-themes/1535
+loop15        7:15   0   395M  1 loop /snap/mesa-2404/1165
+loop16        7:16   0  18.8M  1 loop /snap/prompting-client/204
+loop17        7:17   0  10.8M  1 loop /snap/snap-store/1270
+loop18        7:18   0  15.7M  1 loop /snap/snap-store/1367
+loop19        7:19   0  50.8M  1 loop /snap/snapd/25202
+loop20        7:20   0  49.3M  1 loop /snap/snapd/26865
+loop21        7:21   0   576K  1 loop /snap/snapd-desktop-integration/343
+loop22        7:22   0   580K  1 loop /snap/snapd-desktop-integration/361
+loop23        7:23   0  66.8M  1 loop /snap/core24/1643
+loop24        7:24   0  18.8M  1 loop /snap/prompting-client/222
+nvme0n1     259:0    0 476.9G  0 disk 
+├─nvme0n1p1 259:1    0   260M  0 part /boot/efi
+├─nvme0n1p2 259:2    0    16M  0 part 
+├─nvme0n1p3 259:3    0 426.3G  0 part 
+├─nvme0n1p4 259:4    0   2.1G  0 part 
+├─nvme0n1p5 259:5    0   886M  0 part 
+└─nvme0n1p6 259:6    0  47.5G  0 part /
+
+Explanation: The lsblk command lists all block devices, displaying crucial information about storage devices, their partitions, sizes, and specific mount points in the system hierarchy.
+
+2. Mounted file systems
+
+Command Executed: df -h
+
+Output: 
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           661M  3.1M  658M   1% /run
+/dev/nvme0n1p6   47G   27G   18G  60% /
+tmpfs           3.3G   55M  3.2G   2% /dev/shm
+efivarfs        256K   52K  200K  21% /sys/firmware/efi/efivars
+tmpfs           5.0M   12K  5.0M   1% /run/lock
+tmpfs           1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+tmpfs           1.0M     0  1.0M   0% /run/credentials/systemd-resolved.service
+tmpfs           3.3G   22M  3.3G   1% /tmp
+/dev/nvme0n1p1  256M   89M  168M  35% /boot/efi
+tmpfs           661M  128K  661M   1% /run/user/1000
+
+Explanation: The df (disk free) command with the -h flag shows the amount of free and used disk space across all mounted file systems, presenting the data in a human-readable format (e.g., MB, GB).
+
+3. Disk usage statistics
+
+Command Executed: du -sh ~
+
+Output:11G	/home/krishna
+
+Explanation: The du (disk usage) command estimates the disk space consumed by files and directories. Using -s displays only the total summary for the target directory, and -h makes the output human-readable.
+
+4. Inode utilization
+
+Command Executed: df -i
+
+Output: Filesystem      Inodes  IUsed   IFree IUse% Mounted on
+tmpfs           845901   1692  844209    1% /run
+/dev/nvme0n1p6 3112960 271683 2841277    9% /
+tmpfs           845901    234  845667    1% /dev/shm
+efivarfs             0      0       0     - /sys/firmware/efi/efivars
+tmpfs           845901      6  845895    1% /run/lock
+tmpfs             1024      1    1023    1% /run/credentials/systemd-journald.service
+tmpfs             1024      1    1023    1% /run/credentials/systemd-resolved.service
+tmpfs          1048576     86 1048490    1% /tmp
+/dev/nvme0n1p1       0      0       0     - /boot/efi
+tmpfs           169180    180  169000    1% /run/user/1000
+
+Explanation: I used the df -i command to display file system disk space usage specifically regarding inodes. This is critical for monitoring the number of used and available inodes, preventing file creation failures even if physical block space is available.
+
+5. Storage health observations
+Based on the outputs above, the primary root partition (/) is currently operating within safe parameters with adequate block space available for standard operations. Furthermore, the inode utilization is healthy, meaning the file system is nowhere near exhausting its index node allocation. The system is stable for deploying a new application server.
+
+6. Recommendations for improving storage utilization
+To ensure optimal storage utilization long-term, I recommend:
+
+1.Regularly monitoring the tmpfs (in-memory file system) and clearing unnecessary temporary files to prevent it from consuming excess RAM or forcing swap usage.
+
+2.Implementing log rotation in the /var directory to prevent log files from continuously growing and consuming data blocks.
+
+3.Deleting unneeded files to properly free up both data blocks and their dynamically assigned inodes for reuse.

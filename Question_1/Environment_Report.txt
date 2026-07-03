@@ -1,0 +1,37 @@
+Command 1: id
+Output : uid=1000(krishna) gid=1000(krishna) groups=1000(krishna),27(sudo),100(users)
+Explanation: 
+The id command displays the current user's identity (UID) and the specific groups (GID) the account is associated with.
+ Verifying group memberships, such as sudo or users, is an essential first step in a new environment to confirm that I have the necessary administrative privileges to configure the system and complete subsequent lab tasks.
+
+Command 2: echo $SHELL
+Output: /bin/bash
+Explanation: 
+This command prints the environment variable $SHELL, revealing the absolute path of the command-line interpreter currently in use.
+ Confirming the active shell  ensures that the syntax I use for scripting and executing commands throughout this assignment will be interpreted correctly by the operating system.
+
+Command 3: pwd
+Output: /home/krishna/Downloads/Linux_Assignment/Question_1
+Explanation: The pwd (print working directory) command outputs the absolute path of the current directory I am operating within. This is a crucial validation step before performing file operations, as it confirms I am strictly working inside the designated Question_1 workspace, thereby avoiding accidental modifications to external system files.
+  
+Command 4: ls -la
+Output: 
+total 8
+drwxrwxr-x 2 krishna krishna 4096 Jul  3 15:35
+drwxrwxr-x 7 krishna krishna 4096 Jul  3:15:35
+Explanation: The `ls -la` command lists all files and directories, including hidden configuration files (prefixed with a dot), along with their detailed access permissions, ownership, and size formats. Using the `-l` (long format) and `-a` (all) flags together provides a comprehensive overview of the directory's contents, proving the workspace structure is correct.
+
+Command 5: ping -c 4 google.com
+Output:
+PING google.com (192.178.173.113) 56(84) bytes of data.
+64 bytes from lcbome-in-f113.1e100.net (192.178.173.113): icmp_seq=1 ttl=110 time=56.8 ms
+64 bytes from lcbome-in-f113.1e100.net (192.178.173.113): icmp_seq=2 ttl=110 time=124 ms
+64 bytes from lcbome-in-f113.1e100.net (192.178.173.113): icmp_seq=3 ttl=110 time=146 ms
+64 bytes from lcbome-in-f113.1e100.net (192.178.173.113): icmp_seq=4 ttl=110 time=65.5 ms
+
+--- google.com ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3005ms
+
+Explanation: I executed ping -c 4 google.com to test active network connectivity to an external host.
+ Utilizing the -c 4 option ensures the system transmits exactly four ICMP Echo Request packets and gracefully terminates.
+ Successfully receiving the corresponding replies confirms that the Linux environment has fully functional outbound internet access, proper DNS resolution, and zero packet loss.

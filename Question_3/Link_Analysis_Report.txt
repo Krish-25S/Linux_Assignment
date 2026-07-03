@@ -1,0 +1,41 @@
+1. Inode numbers of all files
+Command Executed: ls -li
+Output:
+total 12
+419965 -rw-rw-r-- 1 krishna krishna 1952 Jul  3 19:53 Link_Analysis_Report.txt
+419949 -rw-rw-r-- 2 krishna krishna   23 Jul  3 20:02 hard_link.txt
+419949 -rw-rw-r-- 2 krishna krishna   23 Jul  3 20:02 original.txt
+419950 lrwxrwxrwx 1 krishna krishna   12 Jul  3 20:02 sym_link.txt -> original.txt
+Explanation: By using the -i flag with ls -l, we can observe the specific inode numbers assigned to each file. The output confirms that original.txt and hard_link.txt share the exact same inode number (419949). Conversely, sym_link.txt is assigned a completely different inode number (419950) because it exists as an independent file on the disk.
+
+2. Comparison between hard link and symbolic link
+Command Executed: file original.txt hard_link.txt sym_link.txt
+Output:
+original.txt:  ASCII text
+hard_link.txt: ASCII text
+sym_link.txt:  symbolic link to original.txt
+Explanation: The file command analyzes the file type. It verifies that a hard link is functionally identical to the target file (both are ASCII text) because it acts as a direct reference to the original inode and shares its data blocks. A symbolic link, however, is identified as a special "symbolic link" file type that merely contains a text path pointing to the target location.
+
+3. Metadata collected using Linux utilities
+Command Executed: readlink sym_link.txt and stat hard_link.txt
+Output:
+original.txt
+  File: hard_link.txt
+  size: 23          Blocks: 8          IO Block: 4096   regular file
+Device: 10306h/66310d    Inode: 419949      Links: 2
+Access: (0664/-rw-rw-r--)  Uid: ( 1000/ krishna)   Gid: ( 1000/ krishna)
+Access: 2026-07-03 20:03:42.630687085 +0530
+Modify: 2026-07-03 20:02:28.952335185 +0530
+Change: 2026-07-03 20:02:28.956343896 +0530
+ Birth: 2026-07-03 20:02:28.952335185 +0530
+Explanation: I used readlink to explicitly display the target path stored inside the symbolic link. Next, I utilized stat to view the complete metadata structure of the hard link's inode. This confirms crucial details such as its file permissions, owner IDs, timestamps, and verifies that its link count is exactly 2.
+
+4. Effect of deleting the original file
+Command Executed: rm original.txt followed by cat hard_link.txt and cat sym_link.txt
+Output:
+Important Project Data
+cat: sym_link.txt: No such file or directory (os error 2)
+Explanation: Removing the original file deletes its specific directory entry, but the cat command proves the hard link still works perfectly because it directly references the underlying, un-deleted data blocks. The symbolic link, however, immediately becomes a broken symlink because the exact file path it points to no longer exists.
+
+5. Conclusions drawn from the experiment
+Based on this experiment, hard links are a highly robust mechanism for preventing accidental data loss, as the actual file data remains intact on the disk until all associated hard links are deleted and the inode is fully freed. Symbolic links are highly versatile because they can point across different file systems and directories, but they are fragile because they rely entirely on the target file's path remaining unchanged.

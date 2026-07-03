@@ -1,0 +1,25 @@
+1. Directory Structure Created
+Command 1: mkdir -p secure_workspace/docs secure_workspace/src
+Explanation: The -p option with mkdir allows the creation of the parent directory secure_workspace and its subdirectories docs and src simueltaneously, ensuring the required hierarchy is built without error.
+
+2. File Permissions before and after modification
+Command 2: ls -ld secure_workspace
+Output: drwxrwxr-x 4 krishna krishna 4096 Jul 3 18:29  secure_workspace
+Command 3: chmod 750 secure_workspace
+Command 4: ls -ld secure_workspace
+Output: drwxr-x--- 4 krishna krishna 4096 Jul 3 18:29 secure_workspace
+Explanation: I have used ls -ld in command 2 to view the initial directory permissions. After that in command 3, I used chmod 750 to apply rwx to the owner, r-x to the group and no permissions to others.
+
+3. Ownership Details
+Command 4: ls -ld secure_workspace
+Output: drwxr-x--- 4 krishna krishna 4096 Jul 3 18:29 secure_workspace
+Explanation: The ls -l command provides a detailed listing that includes the user owner and group owner of the directory, verifying who has administrative control over the workspace
+
+4. Umask Value Used
+Command 5: umask
+Output: 0002
+Explanation: The umask command shows the default permission modifier. It subracts this value from the max directory permissions 777 to determine the default access levels assigned to newly created directories before any chmod modifications.
+
+5.Explanation of how permissions protect project data
+Setting file permissions is the core way Linux secures data. Changing this workspace to 750 guarantees that the project owner can make modifications, team members have enough access to view the work, and unauthorized outside users have absolutely zero access to the project files.
+ 
